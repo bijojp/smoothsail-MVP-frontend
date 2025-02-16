@@ -33,10 +33,6 @@ function NewHireDashboard() {
             <h1 className="text-2xl font-bold mb-4">Edit Profile</h1>
             <div className="space-y-4">
               <div>
-                <label className="block font-semibold">Full Name</label>
-                <input type="text" className="w-full p-2 border rounded" placeholder="Enter your name" />
-              </div>
-              <div>
                 <label className="block font-semibold">Email</label>
                 <input type="email" className="w-full p-2 border rounded" placeholder="Enter your email" />
               </div>
