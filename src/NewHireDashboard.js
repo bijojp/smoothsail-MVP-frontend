@@ -49,8 +49,8 @@ function NewHireDashboard() {
       case "About Me":
         return (
           <div className="p-6 bg-white shadow-md rounded">
-            <h1 className="text-3xl font-bold">About Me</h1>
-            <p className="mt-2 text-gray-600">Please provide your basic details.</p>
+            <h1 className="text-3xl font-bold">New Hire Onboarding</h1>
+            <p className="mt-2 text-gray-600">Please complete the onboarding questionnaire.</p>
             <div className="mt-4 space-y-4">
               <div>
                 <label className="block font-semibold">Full Name</label>
@@ -64,7 +64,23 @@ function NewHireDashboard() {
                 <label className="block font-semibold">Contact Number</label>
                 <input type="tel" className="w-full p-2 border rounded" placeholder="Enter your contact number" />
               </div>
-              <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Save</button>
+              <div>
+                <label className="block font-semibold">Address</label>
+                <input type="text" className="w-full p-2 border rounded" placeholder="Enter your address" />
+              </div>
+              <div>
+                <label className="block font-semibold">Emergency Contact</label>
+                <input type="tel" className="w-full p-2 border rounded" placeholder="Enter emergency contact number" />
+              </div>
+              <div>
+                <label className="block font-semibold">Previous Employer</label>
+                <input type="text" className="w-full p-2 border rounded" placeholder="Enter previous employer" />
+              </div>
+              <div>
+                <label className="block font-semibold">Job Title</label>
+                <input type="text" className="w-full p-2 border rounded" placeholder="Enter your job title" />
+              </div>
+              <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Submit</button>
             </div>
           </div>
         );
