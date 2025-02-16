@@ -132,7 +132,7 @@ function NewHireDashboard() {
   return (
     <div className="flex min-h-screen bg-blue-100">
       {/* Sidebar */}
-      <div className="w-64 h-screen p-6 border-r shadow-md bg-white flex flex-col justify-between">
+      <div className="w-64 min-w-[16rem] h-screen p-6 border-r shadow-md bg-white flex flex-col justify-between">
         <div>
           {/* Profile Button */}
           <button className={`flex items-center space-x-3 w-full p-3 rounded-lg text-lg font-bold shadow-md ${selectedItem === "Profile" ? "bg-blue-500 text-white" : "bg-gray-200 hover:bg-gray-300"} mb-8`} onClick={() => setSelectedItem("Profile")}>
