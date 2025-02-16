@@ -1,12 +1,38 @@
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./firebase";
 
 function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = (role) => {
+  const handleLogin = async () => {
+    setError(""); // Clear previous errors
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log("Logged in:", user);
+
+      // Redirect based on email
+      if (email === "hire1@dummy.com") {
+        navigate("/new-hire");
+      } else if (email === "hr1@dummy.com") {
+        navigate("/hr");
+      } else if (email === "it1@dummy.com") {
+        navigate("/it-admin");
+      } else {
+        setError("Invalid user role!");
+      }
+    } catch (err) {
+      setError("Invalid email or password");
+      console.error("Login error:", err);
+    }
+  };
+
+  const handleRoleNavigation = (role) => {
     navigate(`/${role}`);
   };
 
@@ -21,19 +47,22 @@ function LoginPage() {
           <h2 className="text-xl font-semibold mb-4">Login</h2>
           <input type="email" placeholder="Email" className="w-full p-2 mb-3 border rounded" value={email} onChange={(e) => setEmail(e.target.value)} />
           <input type="password" placeholder="Password" className="w-full p-2 mb-3 border rounded" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Login</button>
+          <div className="h-6 text-red-500 text-sm mb-2">{error && <span>{error}</span>}</div>
+          <button onClick={handleLogin} className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            Login
+          </button>
         </div>
       </div>
 
-      {/* Navigation Buttons */}
+      {/* Quick Navigation for Testing */}
       <div className="flex justify-end space-x-4 mt-6">
-        <button onClick={() => handleLogin("new-hire")} className="px-4 py-2 bg-blue-500 text-white rounded">
+        <button onClick={() => handleRoleNavigation("new-hire")} className="px-4 py-2 bg-blue-500 text-white rounded">
           New Hire
         </button>
-        <button onClick={() => handleLogin("hr")} className="px-4 py-2 bg-green-500 text-white rounded">
+        <button onClick={() => handleRoleNavigation("hr")} className="px-4 py-2 bg-green-500 text-white rounded">
           HR
         </button>
-        <button onClick={() => handleLogin("it-admin")} className="px-4 py-2 bg-purple-500 text-white rounded">
+        <button onClick={() => handleRoleNavigation("it-admin")} className="px-4 py-2 bg-purple-500 text-white rounded">
           IT Admin
         </button>
       </div>
