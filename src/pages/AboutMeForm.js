@@ -3,7 +3,7 @@ import { db, auth } from "../firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { updateProfile } from "firebase/auth"; // for updating Firebase Authentication profile
 
-function ProfileForm({ onSubmit }) {
+function AboutMeForm({ onSubmit }) {
   // Accept onSubmit as a prop
   const [formData, setFormData] = useState({
     fullName: "",
@@ -106,4 +106,4 @@ function ProfileForm({ onSubmit }) {
   );
 }
 
-export default ProfileForm;
+export default AboutMeForm;

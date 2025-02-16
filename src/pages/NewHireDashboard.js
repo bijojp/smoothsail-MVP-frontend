@@ -3,7 +3,7 @@ import { CheckCircle, Hourglass, User, LogOut, Loader2 } from "lucide-react";
 import { auth } from "../firebase"; // Adjust path based on your folder structure
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
-import ProfileForm from "./ProfileForm"; // Adjust path if needed
+import AboutMeForm from "./AboutMeForm"; // Adjust path if needed
 
 const SidebarItem = ({ text, completed, active, onClick }) => (
   <div className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg transition hover:bg-gray-100`} onClick={() => onClick(text)}>
@@ -105,7 +105,7 @@ function NewHireDashboard() {
           </div>
         );
       case "About Me":
-        return <ProfileForm onSubmit={handleSubmitProfile} />; // Pass the function to handle "submit"
+        return <AboutMeForm onSubmit={handleSubmitProfile} />; // Pass the function to handle "submit"
       case "My Documents":
         return (
           <div className="p-6 bg-white shadow-md rounded">
