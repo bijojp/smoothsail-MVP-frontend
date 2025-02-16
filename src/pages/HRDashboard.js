@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User, LogOut, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { db } from "../firebase"; // Firebase configuration
+import { collection, getDocs } from "firebase/firestore"; // Firestore data fetching
 
 const SidebarItem = ({ text, active, onClick, Icon }) => (
   <div className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg transition hover:bg-gray-100 ${active ? "bg-blue-200" : ""}`} onClick={() => onClick(text)}>
@@ -11,12 +13,39 @@ const SidebarItem = ({ text, active, onClick, Icon }) => (
 
 function HRDashboard() {
   const [selectedItem, setSelectedItem] = useState("Joinees");
+  const [userData, setUserData] = useState([]);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     // Handle logout functionality
     navigate("/"); // Redirect to login page after logout
   };
+
+  // Fetch user data from Firestore
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        const usersList = querySnapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            fullName: doc.data().fullName || "Unnamed User", // Accessing fullName
+            role: doc.data().role,
+            status: doc.data().status,
+          }))
+          .filter((user) => user.role === "new-hire" && user.status === "pre"); // Only keep new-hire users with "pre" status
+
+        // Log the fetched data to check
+        console.log(usersList);
+
+        setUserData(usersList);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -51,7 +80,22 @@ function HRDashboard() {
         {selectedItem === "Joinees" && (
           <div>
             <h2 className="text-2xl font-semibold mb-4">Joinees List</h2>
-            <p>Joinee details will be displayed here. Add data fetching and logic later.</p>
+            <div className="overflow-x-auto">
+              <table className="min-w-full table-auto bg-white shadow-md rounded">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2 border">Full Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {userData.map((user) => (
+                    <tr key={user.id}>
+                      <td className="px-4 py-2 border">{user.fullName}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
