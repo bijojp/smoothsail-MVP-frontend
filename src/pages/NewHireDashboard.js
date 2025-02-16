@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { CheckCircle, Hourglass, User, LogOut, Loader2 } from "lucide-react";
+import { auth } from "../firebase"; // Adjust path based on your folder structure
+import { useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
 
 const SidebarItem = ({ text, completed, active, onClick }) => (
   <div className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg transition hover:bg-gray-100`} onClick={() => onClick(text)}>
@@ -10,6 +13,17 @@ const SidebarItem = ({ text, completed, active, onClick }) => (
 
 function NewHireDashboard() {
   const [selectedItem, setSelectedItem] = useState("Dashboard");
+
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/"); // Redirect to login page
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   const renderContent = () => {
     switch (selectedItem) {
@@ -149,7 +163,7 @@ function NewHireDashboard() {
         </div>
 
         {/* Log Out Button */}
-        <button className="flex items-center space-x-2 w-full p-3 rounded-lg bg-red-500 text-white hover:bg-red-600">
+        <button onClick={handleLogout} className="flex items-center space-x-2 w-full p-3 rounded-lg bg-red-500 text-white hover:bg-red-600">
           <LogOut size={22} />
           <span className="text-lg font-semibold">Log Out</span>
         </button>
