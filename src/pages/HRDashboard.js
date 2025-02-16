@@ -1,9 +1,6 @@
-import { useState, useEffect } from "react";
-import { User, LogOut, Users } from "lucide-react"; // Importing the Users icon
-import { auth, db } from "../firebase"; // Firebase imports
+import { useState } from "react";
+import { User, LogOut, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { signOut } from "firebase/auth";
-import { collection, getDocs } from "firebase/firestore"; // Firestore data fetching
 
 const SidebarItem = ({ text, active, onClick, Icon }) => (
   <div className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg transition hover:bg-gray-100 ${active ? "bg-blue-200" : ""}`} onClick={() => onClick(text)}>
@@ -14,29 +11,11 @@ const SidebarItem = ({ text, active, onClick, Icon }) => (
 
 function HRDashboard() {
   const [selectedItem, setSelectedItem] = useState("Joinees");
-  const [newHires, setNewHires] = useState([]);
   const navigate = useNavigate();
 
-  // Fetch New Hire data from Firestore
-  useEffect(() => {
-    const fetchNewHires = async () => {
-      const querySnapshot = await getDocs(collection(db, "newHires"));
-      const hiresList = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setNewHires(hiresList);
-    };
-    fetchNewHires();
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigate("/"); // Redirect to login page
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+  const handleLogout = () => {
+    // Handle logout functionality
+    navigate("/"); // Redirect to login page after logout
   };
 
   return (
@@ -72,33 +51,7 @@ function HRDashboard() {
         {selectedItem === "Joinees" && (
           <div>
             <h2 className="text-2xl font-semibold mb-4">Joinees List</h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full table-auto bg-white shadow-md rounded">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-2 border">Name</th>
-                    <th className="px-4 py-2 border">Document Status</th>
-                    <th className="px-4 py-2 border">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {newHires.map((hire) => (
-                    <tr key={hire.id}>
-                      <td className="px-4 py-2 border">{hire.name}</td>
-                      <td className="px-4 py-2 border">{hire.documentStatus || "Pending"}</td>
-                      <td className="px-4 py-2 border">
-                        <button onClick={() => alert("Approve functionality here")} className="bg-green-500 text-white px-3 py-1 rounded mr-2">
-                          Approve
-                        </button>
-                        <button onClick={() => alert("Reject functionality here")} className="bg-red-500 text-white px-3 py-1 rounded">
-                          Reject
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <p>Joinee details will be displayed here. Add data fetching and logic later.</p>
           </div>
         )}
       </div>
