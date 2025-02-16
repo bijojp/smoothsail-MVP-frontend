@@ -13,11 +13,15 @@ const SidebarItem = ({ text, completed, active, onClick }) => (
 );
 
 function NewHireDashboard() {
-  const [selectedItem, setSelectedItem] = useState("Dashboard");
+  const [selectedItem, setSelectedItem] = useState("Offer Letter");
 
   // State to track completion status of items
   const [completedItems, setCompletedItems] = useState({
-    "Offer Letter": false, // Initially, Offer Letter is not completed
+    "Offer Letter": false,
+    "About Me": false,
+    "My Documents": false,
+    Onboarding: false,
+    Access: false,
   });
 
   const navigate = useNavigate();
@@ -40,6 +44,28 @@ function NewHireDashboard() {
 
     // Automatically move to "About Me" section
     setSelectedItem("About Me");
+  };
+
+  const handleSubmitProfile = () => {
+    // Mark "About Me" as completed when the form is submitted
+    setCompletedItems((prevState) => ({
+      ...prevState,
+      "About Me": true,
+    }));
+
+    // Move to the "My Documents" section
+    setSelectedItem("My Documents");
+  };
+
+  const handleUploadDocuments = () => {
+    // Mark "My Documents" as completed when the upload is done
+    setCompletedItems((prevState) => ({
+      ...prevState,
+      "My Documents": true,
+    }));
+
+    // Move to the "Onboarding" section
+    setSelectedItem("Onboarding");
   };
 
   const renderContent = () => {
@@ -79,7 +105,7 @@ function NewHireDashboard() {
           </div>
         );
       case "About Me":
-        return <ProfileForm />;
+        return <ProfileForm onSubmit={handleSubmitProfile} />; // Pass the function to handle "submit"
       case "My Documents":
         return (
           <div className="p-6 bg-white shadow-md rounded">
@@ -103,7 +129,12 @@ function NewHireDashboard() {
                 <input type="file" className="w-full p-2 border rounded" />
               </div>
             </div>
-            <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Upload</button>
+            <button
+              className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              onClick={handleUploadDocuments} // Update completion when clicked
+            >
+              Upload
+            </button>
           </div>
         );
 
@@ -137,16 +168,11 @@ function NewHireDashboard() {
           </button>
 
           {/* Sidebar Items */}
-          <SidebarItem
-            text="Offer Letter"
-            completed={completedItems["Offer Letter"]} // Pass updated completion status
-            active={selectedItem === "Offer Letter"}
-            onClick={setSelectedItem}
-          />
-          <SidebarItem text="About Me" completed={completedItems["Offer Letter"]} active={selectedItem === "About Me"} onClick={setSelectedItem} />
-          <SidebarItem text="My Documents" completed={false} active={selectedItem === "My Documents"} onClick={setSelectedItem} />
-          <SidebarItem text="Onboarding" completed={false} active={selectedItem === "Onboarding"} onClick={setSelectedItem} />
-          <SidebarItem text="Access" completed={false} active={selectedItem === "Access"} onClick={setSelectedItem} />
+          <SidebarItem text="Offer Letter" completed={completedItems["Offer Letter"]} active={selectedItem === "Offer Letter"} onClick={setSelectedItem} />
+          <SidebarItem text="About Me" completed={completedItems["About Me"]} active={selectedItem === "About Me"} onClick={setSelectedItem} />
+          <SidebarItem text="My Documents" completed={completedItems["My Documents"]} active={selectedItem === "My Documents"} onClick={setSelectedItem} />
+          <SidebarItem text="Onboarding" completed={completedItems["Onboarding"]} active={selectedItem === "Onboarding"} onClick={setSelectedItem} />
+          <SidebarItem text="Access" completed={completedItems["Access"]} active={selectedItem === "Access"} onClick={setSelectedItem} />
         </div>
 
         {/* Log Out Button */}

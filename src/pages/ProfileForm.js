@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { db, auth } from "../firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import { updateProfile } from "firebase/auth"; // for updating Firebase Authentication profile
 
-function ProfileForm() {
+function ProfileForm({ onSubmit }) {
+  // Accept onSubmit as a prop
   const [formData, setFormData] = useState({
     fullName: "",
     dob: "",
@@ -55,13 +57,22 @@ function ProfileForm() {
         return;
       }
 
+      // Update profile in Firebase Authentication (if needed)
+      await updateProfile(user, {
+        displayName: formData.fullName, // You can add other fields like email or photoURL
+      });
+
+      // Update Firestore profile data
       const userRef = doc(db, "users", user.email);
       await setDoc(userRef, { ...formData }, { merge: true });
 
       setMessage("Profile updated successfully!");
+
+      // Trigger the move to "My Documents" after profile update
+      onSubmit(); // Call the onSubmit function passed as prop
     } catch (error) {
       console.error("Error updating profile:", error);
-      setMessage("Failed to update profile.");
+      setMessage("Failed to update profile. " + error.message); // Display specific error message
     }
     setLoading(false);
   };
