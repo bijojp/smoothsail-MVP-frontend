@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { CheckCircle, Hourglass, User, LogOut } from "lucide-react";
+import { CheckCircle, Hourglass, User, LogOut, Loader2 } from "lucide-react";
 
 const SidebarItem = ({ text, completed, active, onClick }) => (
-  <div className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg transition ${active ? "bg-blue-200" : "hover:bg-gray-100"}`} onClick={() => onClick(text)}>
-    {completed ? <CheckCircle className="text-green-500" size={22} /> : <Hourglass className="text-orange-500" size={22} />}
+  <div className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg transition hover:bg-gray-100`} onClick={() => onClick(text)}>
+    {active ? <Loader2 className="text-amber-500 animate-spin" size={22} /> : completed ? <CheckCircle className="text-green-500" size={22} /> : <Hourglass className="text-orange-500" size={22} />}
     <span className="text-lg font-semibold">{text}</span>
   </div>
 );
@@ -35,6 +35,17 @@ function NewHireDashboard() {
           </div>
         );
       case "Offer Letter":
+        return (
+          <div className="p-6 bg-white shadow-md rounded">
+            <h1 className="text-3xl font-bold">Offer Letter</h1>
+            <p className="mt-2 text-gray-600">Here is your offer letter:</p>
+            <div className="mt-4 p-4 border rounded bg-gray-50">
+              <p className="text-sm text-gray-700">Dear [New Hire],</p>
+              <p className="text-sm text-gray-700">We are pleased to offer you the position of [Job Title] at [Company Name]. Your starting salary will be [Salary]. Please review and accept the offer below.</p>
+            </div>
+            <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Accept Offer</button>
+          </div>
+        );
       case "My Documents":
       case "Onboarding":
       case "Access":
