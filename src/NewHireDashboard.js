@@ -46,6 +46,28 @@ function NewHireDashboard() {
             <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Accept Offer</button>
           </div>
         );
+      case "About Me":
+        return (
+          <div className="p-6 bg-white shadow-md rounded">
+            <h1 className="text-3xl font-bold">About Me</h1>
+            <p className="mt-2 text-gray-600">Please provide your basic details.</p>
+            <div className="mt-4 space-y-4">
+              <div>
+                <label className="block font-semibold">Full Name</label>
+                <input type="text" className="w-full p-2 border rounded" placeholder="Enter your full name" />
+              </div>
+              <div>
+                <label className="block font-semibold">Date of Birth</label>
+                <input type="date" className="w-full p-2 border rounded" />
+              </div>
+              <div>
+                <label className="block font-semibold">Contact Number</label>
+                <input type="tel" className="w-full p-2 border rounded" placeholder="Enter your contact number" />
+              </div>
+              <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Save</button>
+            </div>
+          </div>
+        );
       case "My Documents":
       case "Onboarding":
       case "Access":
@@ -78,6 +100,7 @@ function NewHireDashboard() {
 
           {/* Sidebar Items */}
           <SidebarItem text="Offer Letter" completed={false} active={selectedItem === "Offer Letter"} onClick={setSelectedItem} />
+          <SidebarItem text="About Me" completed={false} active={selectedItem === "About Me"} onClick={setSelectedItem} />
           <SidebarItem text="My Documents" completed={true} active={selectedItem === "My Documents"} onClick={setSelectedItem} />
           <SidebarItem text="Onboarding" completed={false} active={selectedItem === "Onboarding"} onClick={setSelectedItem} />
           <SidebarItem text="Access" completed={true} active={selectedItem === "Access"} onClick={setSelectedItem} />
