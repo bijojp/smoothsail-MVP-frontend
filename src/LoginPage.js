@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -10,21 +11,18 @@ function LoginPage() {
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
-    setError(""); // Clear previous errors
+    setError(""); // Clear errors
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      console.log("Logged in:", user);
 
-      // Redirect based on email
-      if (email === "hire1@dummy.com") {
-        navigate("/new-hire");
-      } else if (email === "hr1@dummy.com") {
-        navigate("/hr");
-      } else if (email === "it1@dummy.com") {
-        navigate("/it-admin");
+      // Fetch user role from Firestore
+      const userDoc = await getDoc(doc(db, "users", user.email));
+      if (userDoc.exists()) {
+        const role = userDoc.data().role;
+        navigate(`/${role}`);
       } else {
-        setError("Invalid user role!");
+        setError("User role not found!");
       }
     } catch (err) {
       setError("Invalid email or password");
