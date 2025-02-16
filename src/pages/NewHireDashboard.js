@@ -15,6 +15,11 @@ const SidebarItem = ({ text, completed, active, onClick }) => (
 function NewHireDashboard() {
   const [selectedItem, setSelectedItem] = useState("Dashboard");
 
+  // State to track completion status of items
+  const [completedItems, setCompletedItems] = useState({
+    "Offer Letter": false, // Initially, Offer Letter is not completed
+  });
+
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -24,6 +29,17 @@ function NewHireDashboard() {
     } catch (error) {
       console.error("Logout failed:", error);
     }
+  };
+
+  const handleAcceptOffer = () => {
+    // Mark "Offer Letter" as completed when the button is clicked
+    setCompletedItems((prevState) => ({
+      ...prevState,
+      "Offer Letter": true,
+    }));
+
+    // Automatically move to "About Me" section
+    setSelectedItem("About Me");
   };
 
   const renderContent = () => {
@@ -54,7 +70,12 @@ function NewHireDashboard() {
               <p className="text-sm text-gray-700">Dear [New Hire],</p>
               <p className="text-sm text-gray-700">We are pleased to offer you the position of [Job Title] at [Company Name]. Your starting salary will be [Salary]. Please review and accept the offer below.</p>
             </div>
-            <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Accept Offer</button>
+            <button
+              className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              onClick={handleAcceptOffer} // Update completion when clicked
+            >
+              Accept Offer
+            </button>
           </div>
         );
       case "About Me":
@@ -82,7 +103,7 @@ function NewHireDashboard() {
                 <input type="file" className="w-full p-2 border rounded" />
               </div>
             </div>
-            <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Procced</button>
+            <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Upload</button>
           </div>
         );
 
@@ -116,8 +137,13 @@ function NewHireDashboard() {
           </button>
 
           {/* Sidebar Items */}
-          <SidebarItem text="Offer Letter" completed={false} active={selectedItem === "Offer Letter"} onClick={setSelectedItem} />
-          <SidebarItem text="About Me" completed={false} active={selectedItem === "About Me"} onClick={setSelectedItem} />
+          <SidebarItem
+            text="Offer Letter"
+            completed={completedItems["Offer Letter"]} // Pass updated completion status
+            active={selectedItem === "Offer Letter"}
+            onClick={setSelectedItem}
+          />
+          <SidebarItem text="About Me" completed={completedItems["Offer Letter"]} active={selectedItem === "About Me"} onClick={setSelectedItem} />
           <SidebarItem text="My Documents" completed={false} active={selectedItem === "My Documents"} onClick={setSelectedItem} />
           <SidebarItem text="Onboarding" completed={false} active={selectedItem === "Onboarding"} onClick={setSelectedItem} />
           <SidebarItem text="Access" completed={false} active={selectedItem === "Access"} onClick={setSelectedItem} />
