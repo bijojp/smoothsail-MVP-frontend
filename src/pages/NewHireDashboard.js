@@ -118,9 +118,9 @@ function NewHireDashboard() {
           {/* Sidebar Items */}
           <SidebarItem text="Offer Letter" completed={false} active={selectedItem === "Offer Letter"} onClick={setSelectedItem} />
           <SidebarItem text="About Me" completed={false} active={selectedItem === "About Me"} onClick={setSelectedItem} />
-          <SidebarItem text="My Documents" completed={true} active={selectedItem === "My Documents"} onClick={setSelectedItem} />
+          <SidebarItem text="My Documents" completed={false} active={selectedItem === "My Documents"} onClick={setSelectedItem} />
           <SidebarItem text="Onboarding" completed={false} active={selectedItem === "Onboarding"} onClick={setSelectedItem} />
-          <SidebarItem text="Access" completed={true} active={selectedItem === "Access"} onClick={setSelectedItem} />
+          <SidebarItem text="Access" completed={false} active={selectedItem === "Access"} onClick={setSelectedItem} />
         </div>
 
         {/* Log Out Button */}
