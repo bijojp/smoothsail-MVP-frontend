@@ -3,6 +3,7 @@ import { CheckCircle, Hourglass, User, LogOut, Loader2 } from "lucide-react";
 import { auth } from "../firebase"; // Adjust path based on your folder structure
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
+import ProfileForm from "./ProfileForm"; // Adjust path if needed
 
 const SidebarItem = ({ text, completed, active, onClick }) => (
   <div className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg transition hover:bg-gray-100`} onClick={() => onClick(text)}>
@@ -57,43 +58,7 @@ function NewHireDashboard() {
           </div>
         );
       case "About Me":
-        return (
-          <div className="p-6 bg-white shadow-md rounded">
-            <h1 className="text-3xl font-bold">New Hire Onboarding</h1>
-            <p className="mt-2 text-gray-600">Please complete the onboarding questionnaire.</p>
-            <div className="mt-4 space-y-4">
-              <div>
-                <label className="block font-semibold">Full Name</label>
-                <input type="text" className="w-full p-2 border rounded" placeholder="Enter your full name" />
-              </div>
-              <div>
-                <label className="block font-semibold">Date of Birth</label>
-                <input type="date" className="w-full p-2 border rounded" />
-              </div>
-              <div>
-                <label className="block font-semibold">Contact Number</label>
-                <input type="tel" className="w-full p-2 border rounded" placeholder="Enter your contact number" />
-              </div>
-              <div>
-                <label className="block font-semibold">Address</label>
-                <input type="text" className="w-full p-2 border rounded" placeholder="Enter your address" />
-              </div>
-              <div>
-                <label className="block font-semibold">Emergency Contact</label>
-                <input type="tel" className="w-full p-2 border rounded" placeholder="Enter emergency contact number" />
-              </div>
-              <div>
-                <label className="block font-semibold">Previous Employer</label>
-                <input type="text" className="w-full p-2 border rounded" placeholder="Enter previous employer" />
-              </div>
-              <div>
-                <label className="block font-semibold">Job Title</label>
-                <input type="text" className="w-full p-2 border rounded" placeholder="Enter your job title" />
-              </div>
-              <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Submit</button>
-            </div>
-          </div>
-        );
+        return <ProfileForm />;
       case "My Documents":
         return (
           <div className="p-6 bg-white shadow-md rounded">
