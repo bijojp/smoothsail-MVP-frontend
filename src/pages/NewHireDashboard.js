@@ -4,6 +4,7 @@ import { auth } from "../firebase"; // Adjust path based on your folder structur
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import AboutMeForm from "./AboutMeForm"; // Adjust path if needed
+import MyDocuments from "./MyDocuments"; // Importing the MyDocuments component
 
 const SidebarItem = ({ text, completed, active, onClick }) => (
   <div className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg transition hover:bg-gray-100`} onClick={() => onClick(text)}>
@@ -58,7 +59,7 @@ function NewHireDashboard() {
   };
 
   const handleUploadDocuments = () => {
-    // Mark "My Documents" as completed when the upload is done
+    // Mark "My Documents" as completed even if no document is uploaded
     setCompletedItems((prevState) => ({
       ...prevState,
       "My Documents": true,
@@ -107,43 +108,19 @@ function NewHireDashboard() {
       case "About Me":
         return <AboutMeForm onSubmit={handleSubmitProfile} />; // Pass the function to handle "submit"
       case "My Documents":
+        return <MyDocuments onUpload={handleUploadDocuments} />; // Pass the onUpload function here
+      case "Onboarding":
         return (
           <div className="p-6 bg-white shadow-md rounded">
-            <h1 className="text-3xl font-bold">Upload Required Documents</h1>
-            <p className="mt-2 text-gray-600">Please upload the following required documents for onboarding:</p>
-            <div className="mt-4 space-y-4">
-              <div>
-                <label className="block text-gray-700 font-medium mb-1">Government ID (e.g., Passport, Driver's License)</label>
-                <input type="file" className="w-full p-2 border rounded" />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-1">Proof of Address</label>
-                <input type="file" className="w-full p-2 border rounded" />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-1">Educational Certificates</label>
-                <input type="file" className="w-full p-2 border rounded" />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-1">Previous Employment Proof</label>
-                <input type="file" className="w-full p-2 border rounded" />
-              </div>
-            </div>
-            <button
-              className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-              onClick={handleUploadDocuments} // Update completion when clicked
-            >
-              Upload
-            </button>
+            <h1 className="text-3xl font-bold">Onboarding</h1>
+            <p className="mt-2 text-gray-600">Details about onboarding will be displayed here.</p>
           </div>
         );
-
-      case "Onboarding":
       case "Access":
         return (
           <div className="p-6 bg-white shadow-md rounded">
-            <h1 className="text-3xl font-bold">{selectedItem}</h1>
-            <p className="mt-2 text-gray-600">Details about {selectedItem} will be displayed here.</p>
+            <h1 className="text-3xl font-bold">Access</h1>
+            <p className="mt-2 text-gray-600">Access details will be displayed here.</p>
           </div>
         );
       default:
