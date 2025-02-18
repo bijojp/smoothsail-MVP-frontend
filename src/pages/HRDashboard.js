@@ -32,6 +32,7 @@ function HRDashboard() {
             fullName: doc.data().fullName || "Unnamed User", // Accessing fullName
             role: doc.data().role,
             status: doc.data().status,
+            joiningDate: doc.data().joiningDate || "N/A", // Fetching joiningDate
           }))
           .filter((user) => user.role === "new-hire" && user.status === "pre"); // Only keep new-hire users with "pre" status
 
@@ -46,6 +47,12 @@ function HRDashboard() {
 
     fetchUserData();
   }, []);
+
+  // Function to format the date as DD/MM/YY
+  const formatDate = (date) => {
+    const newDate = new Date(date);
+    return newDate.toLocaleDateString("en-GB"); // Returns date in DD/MM/YY format
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -84,12 +91,14 @@ function HRDashboard() {
               <table className="min-w-full table-auto bg-white shadow-md rounded">
                 <thead>
                   <tr>
+                    <th className="px-4 py-2 border w-40 text-left">Joining Date</th> {/* Left-aligned heading */}
                     <th className="px-4 py-2 border">Full Name</th>
                   </tr>
                 </thead>
                 <tbody>
                   {userData.map((user) => (
                     <tr key={user.id}>
+                      <td className="px-4 py-2 border">{user.joiningDate !== "N/A" ? formatDate(user.joiningDate) : "N/A"}</td> {/* Formatting Joining Date */}
                       <td className="px-4 py-2 border">{user.fullName}</td>
                     </tr>
                   ))}
