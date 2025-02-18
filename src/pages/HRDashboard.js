@@ -87,25 +87,23 @@ function HRDashboard() {
           <div className="bg-white p-6 shadow-md rounded">
             <h1 className="text-2xl font-bold">{selectedCandidate.fullName}</h1>
             <p className="text-gray-600">Joining Date: {selectedCandidate.joiningDate !== "N/A" ? formatDate(selectedCandidate.joiningDate) : "N/A"}</p>
-            <h2 className="mt-4 text-xl font-semibold">About Me</h2>
-            <p>
-              <strong>Date of Birth:</strong> {selectedCandidate.dob}
-            </p>
-            <p>
-              <strong>Contact Number:</strong> {selectedCandidate.contactNumber}
-            </p>
-            <p>
-              <strong>Address:</strong> {selectedCandidate.address}
-            </p>
-            <p>
-              <strong>Emergency Contact:</strong> {selectedCandidate.emergencyContact}
-            </p>
-            <p>
-              <strong>Previous Employer:</strong> {selectedCandidate.previousEmployer}
-            </p>
-            <p>
-              <strong>Job Title:</strong> {selectedCandidate.jobTitle}
-            </p>
+            <table className="mt-4 w-full border-collapse border border-gray-300">
+              <tbody>
+                {[
+                  ["Date of Birth", selectedCandidate.dob],
+                  ["Contact Number", selectedCandidate.contactNumber],
+                  ["Address", selectedCandidate.address],
+                  ["Emergency Contact", selectedCandidate.emergencyContact],
+                  ["Previous Employer", selectedCandidate.previousEmployer],
+                  ["Job Title", selectedCandidate.jobTitle],
+                ].map(([label, value], index) => (
+                  <tr key={index} className="border-b border-gray-300">
+                    <td className="p-2 font-semibold w-48">{label}</td>
+                    <td className="p-2">{value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
           <p className="text-xl text-gray-500">Select a candidate to view details</p>
