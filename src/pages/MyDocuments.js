@@ -1,57 +1,38 @@
-import { useState } from "react";
+import { db, auth } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 function MyDocuments({ onUpload }) {
-  // Receive the onUpload function as a prop
-  const [documents, setDocuments] = useState({
-    governmentId: null,
-    proofOfAddress: null,
-    educationalCertificates: null,
-    previousEmploymentProof: null,
-  });
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    const user = auth.currentUser;
 
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setDocuments((prevState) => ({
-      ...prevState,
-      [name]: files[0],
-    }));
-  };
+    if (file && user) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file); // Convert to Base64
+      reader.onload = async () => {
+        const base64String = reader.result;
+        console.log("Base64 Document:", base64String); // Log Base64 string
 
-  const handleSubmit = () => {
-    // Handle the form submission logic here, e.g., upload files to Firebase
-    console.log("Submitting documents:", documents);
-
-    // Call the parent function to mark the document step as completed
-    onUpload();
+        try {
+          const userRef = doc(db, "users", user.email);
+          await setDoc(userRef, { documents: { governmentId: base64String } }, { merge: true });
+          console.log("Document uploaded to Firestore");
+          onUpload(); // Call parent function to mark step as completed
+        } catch (error) {
+          console.error("Error uploading document:", error);
+        }
+      };
+    }
   };
 
   return (
     <div className="p-6 bg-white shadow-md rounded">
       <h1 className="text-3xl font-bold">Upload Required Documents</h1>
-      <p className="mt-2 text-gray-600">Please upload the following required documents for onboarding:</p>
-
-      <div className="mt-4 space-y-4">
-        <div>
-          <label className="block text-gray-700 font-medium mb-1">Government ID (e.g., Passport, Driver's License)</label>
-          <input type="file" name="governmentId" className="w-full p-2 border rounded" onChange={handleFileChange} />
-        </div>
-        <div>
-          <label className="block text-gray-700 font-medium mb-1">Proof of Address</label>
-          <input type="file" name="proofOfAddress" className="w-full p-2 border rounded" onChange={handleFileChange} />
-        </div>
-        <div>
-          <label className="block text-gray-700 font-medium mb-1">Educational Certificates</label>
-          <input type="file" name="educationalCertificates" className="w-full p-2 border rounded" onChange={handleFileChange} />
-        </div>
-        <div>
-          <label className="block text-gray-700 font-medium mb-1">Previous Employment Proof</label>
-          <input type="file" name="previousEmploymentProof" className="w-full p-2 border rounded" onChange={handleFileChange} />
-        </div>
+      <p className="mt-2 text-gray-600">Please upload your government ID for onboarding:</p>
+      <div className="mt-4">
+        <label className="block text-gray-700 font-medium mb-1">Government ID (e.g., Passport, Driver's License)</label>
+        <input type="file" className="w-full p-2 border rounded" onChange={handleFileChange} />
       </div>
-
-      <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" onClick={handleSubmit}>
-        Upload Documents
-      </button>
     </div>
   );
 }
