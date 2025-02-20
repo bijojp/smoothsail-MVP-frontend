@@ -5,6 +5,7 @@ import { CloudDownload } from "lucide-react";
 
 function MyDocuments({ onUpload }) {
   const [existingDocument, setExistingDocument] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     const fetchDocument = async () => {
@@ -20,13 +21,20 @@ function MyDocuments({ onUpload }) {
     fetchDocument();
   }, []);
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    const user = auth.currentUser;
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
 
-    if (file && user) {
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      alert("Please select a document before uploading.");
+      return;
+    }
+
+    const user = auth.currentUser;
+    if (user) {
       const reader = new FileReader();
-      reader.readAsDataURL(file); // Convert to Base64
+      reader.readAsDataURL(selectedFile); // Convert to Base64
       reader.onload = async () => {
         const base64String = reader.result;
         console.log("Base64 Document:", base64String); // Log Base64 string
@@ -36,6 +44,7 @@ function MyDocuments({ onUpload }) {
           await setDoc(userRef, { documents: { governmentId: base64String } }, { merge: true });
           console.log("Document uploaded to Firestore");
           setExistingDocument(base64String); // Update displayed document
+          setSelectedFile(null); // Reset selected file
           onUpload(); // Call parent function to mark step as completed
         } catch (error) {
           console.error("Error uploading document:", error);
@@ -67,13 +76,13 @@ function MyDocuments({ onUpload }) {
           <div className="flex items-center space-x-2 mb-2">
             <CloudDownload className="h-6 w-6 text-green-500" />
             <button onClick={downloadPDF} className="text-blue-600 hover:underline">
-              Download File
+              View Document
             </button>
           </div>
         )}
         <input type="file" className="w-full p-2 border rounded" onChange={handleFileChange} />
-        <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" onClick={handleFileChange}>
-          Upload Document
+        <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" onClick={selectedFile ? handleUpload : onUpload}>
+          {selectedFile ? "Upload Document" : "Proceed"}
         </button>
       </div>
     </div>
