@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { User, LogOut, Users, Box } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, addDoc } from "firebase/firestore";
 
 const SidebarItem = ({ text, active, onClick, Icon }) => (
   <div className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg transition hover:bg-gray-100 ${active ? "bg-blue-200" : ""}`} onClick={() => onClick(text)}>
@@ -16,13 +16,69 @@ function ITAdminDashboard() {
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSidebar, setSelectedSidebar] = useState("Candidates");
+
+  const [showAssetForm, setShowAssetForm] = useState(false);
+  const [assetName, setAssetName] = useState("");
+  const [assignedTo, setAssignedTo] = useState("");
+
+  const [category, setCategory] = useState("");
+  const [purchaseDate, setPurchaseDate] = useState("");
+
+  const [assets, setAssets] = useState([]);
+  const [loadingAssets, setLoadingAssets] = useState(true);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
     navigate("/");
   };
 
+  const handleAddAsset = async () => {
+    if (!assetName) {
+      alert("Asset Name is required!");
+      return;
+    }
+
+    const newAsset = {
+      assetName,
+      assignedTo: assignedTo || "Unassigned",
+      category,
+      purchaseDate,
+    };
+
+    try {
+      await addDoc(collection(db, "assets"), newAsset);
+      setAssets([...assets, newAsset]); // Update UI immediately
+      setAssetName("");
+      setAssignedTo("");
+      setCategory("");
+      setPurchaseDate("");
+      setShowAssetForm(false);
+    } catch (error) {
+      console.error("Error adding asset:", error);
+    }
+  };
+
   useEffect(() => {
+    const fetchAssets = async () => {
+      setLoadingAssets(true);
+      try {
+        const querySnapshot = await getDocs(collection(db, "assets"));
+        const assetList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setAssets(assetList);
+      } catch (error) {
+        console.error("Error fetching assets:", error);
+      }
+      setLoadingAssets(false);
+    };
+
+    fetchAssets();
+
     const fetchUserData = async () => {
       setLoading(true);
       try {
@@ -142,8 +198,98 @@ function ITAdminDashboard() {
           </div>
         ) : selectedSidebar === "Assets" ? (
           <div className="bg-white p-6 shadow-md rounded">
-            <h1 className="text-2xl font-bold">Assets</h1>
-            <p className="text-gray-600">Manage your assets here.</p>
+            <h1 className="text-2xl font-bold mb-4">Assets</h1>
+
+            {/* Add Asset Button */}
+            <button className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => setShowAssetForm(!showAssetForm)}>
+              {showAssetForm ? "Cancel" : "Add Asset"}
+            </button>
+
+            {/* Add Asset Form */}
+            {showAssetForm && (
+              <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-4">
+                <h2 className="text-xl font-semibold mb-2">Add New Asset</h2>
+
+                <input type="text" placeholder="Asset Name" value={assetName} onChange={(e) => setAssetName(e.target.value)} className="w-full p-2 border rounded mb-2" />
+
+                {/* Assigned To - Autocomplete Dropdown */}
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Assign to (Optional)"
+                    value={assignedTo}
+                    onChange={(e) => {
+                      setAssignedTo(e.target.value);
+                      setDropdownVisible(true); // Show dropdown when typing
+                    }}
+                    onBlur={() => setTimeout(() => setDropdownVisible(false), 200)} // Hide dropdown on blur after a delay
+                    className="w-full p-2 border rounded mb-2"
+                  />
+                  {dropdownVisible && assignedTo && (
+                    <ul className="absolute z-10 bg-white border w-full mt-1 max-h-40 overflow-auto rounded shadow-md">
+                      {userData
+                        .filter((user) => user.fullName.toLowerCase().includes(assignedTo.toLowerCase()))
+                        .map((user) => (
+                          <li
+                            key={user.id}
+                            className="p-2 cursor-pointer hover:bg-gray-100"
+                            onMouseDown={() => {
+                              setAssignedTo(user.fullName);
+                              setDropdownVisible(false); // Hide dropdown immediately on selection
+                            }}
+                          >
+                            {user.fullName}
+                          </li>
+                        ))}
+                    </ul>
+                  )}
+                </div>
+
+                <input type="text" placeholder="Category" value={category} onChange={(e) => setCategory(e.target.value)} className="w-full p-2 border rounded mb-2" />
+
+                <input type="date" value={purchaseDate} onChange={(e) => setPurchaseDate(e.target.value)} className="w-full p-2 border rounded mb-2" />
+
+                <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" onClick={handleAddAsset}>
+                  Save Asset
+                </button>
+              </div>
+            )}
+
+            {/* Assets Table */}
+            {loadingAssets ? (
+              <p className="text-gray-500">Loading assets...</p>
+            ) : (
+              <table className="w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-gray-200">
+                    <th className="p-3 border border-gray-300 text-left">Asset Name</th>
+                    <th className="p-3 border border-gray-300 text-left">Assigned To</th>
+                    <th className="p-3 border border-gray-300 text-left">Category</th>
+                    <th className="p-3 border border-gray-300 text-left">Purchase Date</th>
+                    <th className="p-3 border border-gray-300 text-left">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {assets.length > 0 ? (
+                    assets.map((asset) => (
+                      <tr key={asset.id} className="border border-gray-300">
+                        <td className="p-3 border border-gray-300">{asset.assetName}</td>
+                        <td className="p-3 border border-gray-300">{asset.assignedTo || "Unassigned"}</td>
+                        <td className="p-3 border border-gray-300">{asset.category}</td>
+                        <td className="p-3 border border-gray-300">{asset.purchaseDate || "N/A"}</td>
+                        <td className="p-3 border border-gray-300">{asset.assignedTo ? "Assigned" : "Available"}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="p-3 text-center text-gray-500">
+                        No assets available.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
         ) : (
           <p className="text-xl text-gray-500">Select a candidate to view details</p>
