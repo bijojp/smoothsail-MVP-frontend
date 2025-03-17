@@ -48,8 +48,10 @@ function ITAdminDashboard() {
     };
 
     try {
-      await addDoc(collection(db, "assets"), newAsset);
-      setAssets([...assets, newAsset]); // Update UI immediately
+      const docRef = await addDoc(collection(db, "assets"), newAsset);
+      const assetWithId = { id: docRef.id, ...newAsset };
+
+      setAssets([...assets, assetWithId]); // Ensure the ID is stored in state
       setAssetName("");
       setAssignedTo("");
       setCategory("");
@@ -62,8 +64,20 @@ function ITAdminDashboard() {
 
   const handleDeleteAsset = async (id) => {
     try {
-      await deleteDoc(doc(db, "assets", id));
-      setAssets(assets.filter((asset) => asset.id !== id));
+      console.log("Deleting asset with ID:", id);
+
+      // Ensure asset exists before deleting
+      if (!assets.some((asset) => asset.id === id)) {
+        console.warn("Asset not found in state, skipping deletion.");
+        return;
+      }
+
+      const assetRef = doc(db, "assets", id);
+      await deleteDoc(assetRef);
+
+      setAssets((prevAssets) => prevAssets.filter((asset) => asset.id !== id));
+
+      console.log("Asset deleted successfully");
     } catch (error) {
       console.error("Error deleting asset:", error);
     }
@@ -307,7 +321,13 @@ function ITAdminDashboard() {
                         <td className="p-3 border border-gray-300">{asset.purchaseDate || "N/A"}</td>
                         <td className="p-3 border border-gray-300">{asset.assignedTo ? "Assigned" : "Available"}</td>
                         <td className="p-3 border border-gray-300">
-                          <button onClick={() => handleDeleteAsset(asset.id)} className="text-red-500 hover:text-red-700">
+                          <button
+                            onClick={() => {
+                              console.log("Clicked delete for asset:", asset);
+                              handleDeleteAsset(asset.id);
+                            }}
+                            className="text-red-500 hover:text-red-700"
+                          >
                             <Trash size={20} />
                           </button>
                         </td>
