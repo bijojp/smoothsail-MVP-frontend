@@ -181,6 +181,24 @@ function ITAdminDashboard() {
                 ))}
               </tbody>
             </table>
+
+            {/* Assigned Assets */}
+            <h2 className="mt-6 text-xl font-semibold">Assigned Assets</h2>
+            {assets.some((asset) => asset.assignedTo === selectedCandidate.fullName) ? (
+              <ul className="mt-2">
+                {assets
+                  .filter((asset) => asset.assignedTo === selectedCandidate.fullName)
+                  .map((asset) => (
+                    <li key={asset.id} className="p-2 border rounded bg-gray-100 mt-2">
+                      {asset.assetName} - {asset.category}
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500">No assets assigned.</p>
+            )}
+
+            {/* Uploaded Documents */}
             <h2 className="mt-6 text-xl font-semibold">Uploaded Documents</h2>
             {selectedCandidate.documents.length > 0 ? (
               <ul className="mt-2">
