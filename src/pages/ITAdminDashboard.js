@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { User, LogOut, Users, Box } from "lucide-react";
+import { User, LogOut, Users, Box, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../firebase";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import { collection, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore";
 
 const SidebarItem = ({ text, active, onClick, Icon }) => (
   <div className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg transition hover:bg-gray-100 ${active ? "bg-blue-200" : ""}`} onClick={() => onClick(text)}>
@@ -57,6 +57,15 @@ function ITAdminDashboard() {
       setShowAssetForm(false);
     } catch (error) {
       console.error("Error adding asset:", error);
+    }
+  };
+
+  const handleDeleteAsset = async (id) => {
+    try {
+      await deleteDoc(doc(db, "assets", id));
+      setAssets(assets.filter((asset) => asset.id !== id));
+    } catch (error) {
+      console.error("Error deleting asset:", error);
     }
   };
 
@@ -285,6 +294,7 @@ function ITAdminDashboard() {
                     <th className="p-3 border border-gray-300 text-left">Category</th>
                     <th className="p-3 border border-gray-300 text-left">Purchase Date</th>
                     <th className="p-3 border border-gray-300 text-left">Status</th>
+                    <th className="p-3 border border-gray-300 text-left">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -296,6 +306,11 @@ function ITAdminDashboard() {
                         <td className="p-3 border border-gray-300">{asset.category}</td>
                         <td className="p-3 border border-gray-300">{asset.purchaseDate || "N/A"}</td>
                         <td className="p-3 border border-gray-300">{asset.assignedTo ? "Assigned" : "Available"}</td>
+                        <td className="p-3 border border-gray-300">
+                          <button onClick={() => handleDeleteAsset(asset.id)} className="text-red-500 hover:text-red-700">
+                            <Trash size={20} />
+                          </button>
+                        </td>
                       </tr>
                     ))
                   ) : (
