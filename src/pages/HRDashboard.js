@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { User, LogOut, Users } from "lucide-react";
+import { User, LogOut, Users, UserCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../firebase";
 import { collection, getDocs, updateDoc, addDoc, doc } from "firebase/firestore";
@@ -110,7 +110,7 @@ function HRDashboard() {
             <User size={24} />
             <span>HR Name</span>
           </button>
-          <SidebarItem text="Joinees" active={selectedSidebar === "Joinees"} onClick={() => handleSidebarClick("Joinees")} Icon={Users} />
+          <SidebarItem text="Joinees" active={selectedSidebar === "Joinees"} onClick={() => handleSidebarClick("Joinees")} Icon={UserCheck} />
           <SidebarItem text="Candidates" active={selectedSidebar === "Candidates"} onClick={() => handleSidebarClick("Candidates")} Icon={Users} />
         </div>
         <button onClick={handleLogout} className="flex items-center space-x-2 w-full p-3 rounded-lg bg-red-500 text-white hover:bg-red-600">
