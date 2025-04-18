@@ -1,3 +1,70 @@
+# SmoothSail - Employee Onboarding Platform
+
+SmoothSail is a modern web application designed to streamline the employee onboarding process. It provides dedicated dashboards for new hires, HR personnel, and IT administrators.
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── auth/          # Authentication related components
+│   ├── dashboard/     # Dashboard specific components
+│   ├── forms/         # Reusable form components
+│   └── shared/        # Shared/common components
+├── hooks/             # Custom React hooks
+├── services/
+│   ├── api/          # API service functions
+│   └── firebase/     # Firebase configuration
+├── utils/            # Utility functions
+├── constants/        # App-wide constants
+└── pages/           # Route-level components
+```
+
+## Features
+
+- Role-based authentication and authorization
+- New Hire Dashboard
+- HR Dashboard
+- IT Admin Dashboard
+- Document Management
+- Profile Management
+
+## Setup
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create a `.env` file in the root directory with the following variables:
+   ```
+   REACT_APP_API_KEY=your_api_key
+   REACT_APP_AUTH_DOMAIN=your_auth_domain
+   REACT_APP_PROJECT_ID=your_project_id
+   REACT_APP_STORAGE_BUCKET=your_storage_bucket
+   REACT_APP_MESSAGING_SENDER_ID=your_messaging_sender_id
+   REACT_APP_APP_ID=your_app_id
+   ```
+4. Start the development server:
+   ```bash
+   npm start
+   ```
+
+## Technologies Used
+
+- React
+- Firebase (Authentication, Firestore, Storage)
+- React Router
+- Tailwind CSS
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,4 +135,3 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# smoothsail-MVP-frontend
